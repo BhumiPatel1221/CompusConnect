@@ -19,10 +19,21 @@ const app = express();
 // Create HTTP server (required for Socket.IO)
 const httpServer = http.createServer(app);
 
+// Allowed origins for CORS
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5000',
+    'https://compusconnectbackend.onrender.com',
+    process.env.FRONTEND_URL,
+].filter(Boolean);
+
 // Middleware
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
 
 // Static file serving for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -60,14 +71,14 @@ app.use(errorHandler);
 // Start server
 const PORT = process.env.PORT || 5000;
 const server = httpServer.listen(PORT, () => {
-    console.log(`\n🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-    console.log(`📍 API URL: http://localhost:${PORT}`);
-    console.log(`\n📚 Available Routes:`);
+    console.log(`\n Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    console.log(` API URL: http://localhost:${PORT}`);
+    console.log(`\n Available Routes:`);
     console.log(`   - Auth: http://localhost:${PORT}/api/auth`);
     console.log(`   - Events: http://localhost:${PORT}/api/events`);
     console.log(`   - Registrations: http://localhost:${PORT}/api/registrations`);
     console.log(`   - Company Visits: http://localhost:${PORT}/api/company-visits`);
-    console.log(`\n✅ Server is ready to accept requests!\n`);
+    console.log(`\n Server is ready to accept requests!\n`);
 });
 
 // Socket.IO init (after server starts)
@@ -75,7 +86,7 @@ initSockets(httpServer);
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-    console.log(`❌ Error: ${err.message}`);
+    console.log(` Error: ${err.message}`);
     // Close server & exit process
     server.close(() => process.exit(1));
 });

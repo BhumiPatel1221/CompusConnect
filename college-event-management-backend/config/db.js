@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
 
 /**
- * Connect to MongoDB Local Database
- * This function establishes connection to local MongoDB instance
- * Make sure MongoDB service is running on your machine
+ * Connect to MongoDB Atlas Database
+ * This function establishes connection to MongoDB Atlas cloud instance
  */
 const connectDB = async () => {
   try {
-    // Connect to MongoDB using connection string from .env file
-    // Note: useNewUrlParser and useUnifiedTopology are deprecated in Mongoose 6+
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
 
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-    console.log(`📊 Database Name: ${conn.connection.name}`);
+    console.log(`MongoDB Atlas Connected: ${conn.connection.host}`);
+    console.log(` Database Name: ${conn.connection.name}`);
   } catch (error) {
-    console.error(`❌ Error connecting to MongoDB: ${error.message}`);
+    console.error(` Error connecting to MongoDB: ${error.message}`);
     // Exit process with failure
     process.exit(1);
   }
