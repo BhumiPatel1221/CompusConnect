@@ -7,6 +7,7 @@ function initSockets(httpServer) {
         'http://localhost:5173',
         'http://localhost:5000',
         'https://compusconnectbackend.onrender.com',
+        'https://compus-connect-three.vercel.app',
         process.env.FRONTEND_URL,
     ].filter(Boolean);
 
