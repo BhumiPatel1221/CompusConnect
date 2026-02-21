@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { authService, AuthUser, LoginCredentials, RegisterData } from "../../services/authService";
+import { disconnectChatbotSocket } from "../../services/chatbotSocket";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -58,7 +59,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (data: RegisterData) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -73,7 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    disconnectChatbotSocket();
     authService.logout();
+    localStorage.removeItem('campus_connect_user');
+    localStorage.removeItem('campus_connect_token');
     setUser(null);
     setError(null);
     window.location.href = "/login";

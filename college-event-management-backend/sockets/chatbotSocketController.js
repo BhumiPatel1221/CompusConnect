@@ -133,24 +133,42 @@ async function handleRegistrationCount(message) {
 async function processMessage({ message, user }) {
     const msg = lower(message);
 
-    if (msg.includes('upcoming') && msg.includes('event')) {
+    // Upcoming events
+    if (msg.includes('upcoming') || (msg.includes('show') && msg.includes('event')) || msg.includes('next event') || msg.includes('events list') || msg.includes('list event')) {
         return handleUpcomingEvents();
     }
 
-    if (msg.includes('my') && (msg.includes('registration') || msg.includes('registered events'))) {
+    // My registrations
+    if ((msg.includes('my') && (msg.includes('registration') || msg.includes('registered') || msg.includes('register'))) || msg.includes('my event') || msg.includes('enrolled')) {
         return handleMyRegistrations(user._id);
     }
 
-    if (msg.includes('time of') || msg.includes('time for') || msg.includes('when is')) {
+    // Event time
+    if (msg.includes('time of') || msg.includes('time for') || msg.includes('when is') || msg.includes('schedule of') || msg.includes('what time')) {
         return handleEventTime(message);
     }
 
-    if (msg.includes('company') && (msg.includes('visiting') || msg.includes('visit') || msg.includes('placement'))) {
+    // Company visits
+    if (msg.includes('company') || msg.includes('visit') || msg.includes('placement') || msg.includes('recruit') || msg.includes('hiring')) {
         return handleNextCompanyVisit();
     }
 
-    if (msg.includes('how many') && msg.includes('registered')) {
+    // Registration count
+    if ((msg.includes('how many') || msg.includes('count') || msg.includes('total')) && (msg.includes('registered') || msg.includes('registration') || msg.includes('student'))) {
         return handleRegistrationCount(message);
+    }
+
+    // Help / greetings
+    if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey') || msg.includes('help')) {
+        return {
+            text: "Hi there! I'm your CampusConnect Assistant. Here's what I can help with:\n\n" +
+                "1. 'Show upcoming events' - See what's coming up\n" +
+                "2. 'My registered events' - View your registrations\n" +
+                "3. 'What is the time of [event name]?' - Get event schedule\n" +
+                "4. 'Which company is visiting next?' - Upcoming company visits\n" +
+                "5. 'How many students registered for [event]?' - Registration count",
+            data: null,
+        };
     }
 
     return {
